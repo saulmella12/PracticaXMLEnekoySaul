@@ -4,7 +4,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import random.RandomStringGenerator;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -16,7 +15,7 @@ import java.util.stream.Stream;
 
 public class XmlCreator {
 
-    public void createXML(List<String> attribute,String csvUri, String xmlName) throws IOException {
+   /* public void createXML(List<String> attribute,String csvUri, String xmlName) throws IOException {
         Element rootElement = new Element(xmlName);
         Document dom = new Document();
         RandomStringGenerator r = RandomStringGenerator.getInstance();
@@ -34,7 +33,7 @@ public class XmlCreator {
             rootElement = elementsCreator(attribute, values, dom, r.randomString(), rootElement);
         }
 
-        /*System.out.println(rootElement);*/
+        *//*System.out.println(rootElement);*//*
         dom.setRootElement(rootElement);
 
         xmlGenerator(dom,xmlName);
@@ -74,5 +73,5 @@ public class XmlCreator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
