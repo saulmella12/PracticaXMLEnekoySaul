@@ -1,14 +1,14 @@
 package Csv;
 
-import Objetos.CalidadAire;
-import Objetos.DatosMeteorologicos;
-
+import Objetos.POJODatos;
+import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class Lanzador {
-    List<CalidadAire> listaCalidad = new ArrayList<>();
-    List<DatosMeteorologicos> listaMeteo = new ArrayList<>();
+    List<POJODatos> listaCalidad = new ArrayList<>();
+    List<POJODatos> listaMeteo = new ArrayList<>();
 
 
 }

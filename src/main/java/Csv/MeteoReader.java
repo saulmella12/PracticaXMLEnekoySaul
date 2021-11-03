@@ -1,7 +1,6 @@
 package Csv;
 
-import Objetos.CalidadAire;
-import Objetos.DatosMeteorologicos;
+import Objetos.POJODatos;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +23,9 @@ public class MeteoReader {
         return meteoReader;
     }
 
-    public List<DatosMeteorologicos> objectGenerator(){
+    public List<POJODatos> objectGenerator(){
 
-        List<DatosMeteorologicos> datosMeteo = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
+        List<POJODatos> datosMeteo = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
         //System.out.println("datos calidad: "+datosCalidad.size());
         return datosMeteo;
     }
@@ -40,8 +39,8 @@ public class MeteoReader {
         return null;
     }
 
-    private DatosMeteorologicos getDatos(String linea){
-        DatosMeteorologicos meteo = new DatosMeteorologicos();
+    private POJODatos getDatos(String linea){
+        POJODatos meteo = new POJODatos();
         Scanner sc = new Scanner(linea);
         sc.useDelimiter(";");
         sc.next();
@@ -57,12 +56,14 @@ public class MeteoReader {
 
         meteo.setTemperaturas(getTemperaturas(linea));
 
-        Optional<Double> max = meteo.getTemperaturas().stream().max(Comparator.comparing(t->t));
-        meteo.setMax(max.get());
-        Optional<Double> min = meteo.getTemperaturas().stream().min(Comparator.comparing(t->t));
-        meteo.setMin(min.get());
-        Double media = getMedia(meteo.getTemperaturas());
-        meteo.setMedia(media);
+        if(meteo.getTemperaturas().size()!=0){
+            Optional<Double> max = meteo.getTemperaturas().stream().max(Comparator.comparing(t->t));
+            meteo.setMax(max.get());
+            Optional<Double> min = meteo.getTemperaturas().stream().min(Comparator.comparing(t->t));
+            meteo.setMin(min.get());
+            Double media = getMedia(meteo.getTemperaturas());
+            meteo.setMedia(media);
+        }
 
         return meteo;
     }
@@ -100,7 +101,7 @@ public class MeteoReader {
         temperaturas.forEach(v->{
             returner.add(Double.parseDouble(v));
         });
-        //System.out.println("temp: "+returner.size());
+
         return returner;
     }
 

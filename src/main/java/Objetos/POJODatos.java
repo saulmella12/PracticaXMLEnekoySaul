@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 
-public class CalidadAire {
+public class POJODatos {
     String municipio,estacion,magnitud,fecha;
     List<Double> temperaturas;
     double max,min,media;

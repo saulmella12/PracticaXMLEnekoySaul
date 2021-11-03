@@ -1,77 +1,64 @@
 package xml;
 
+import Csv.Lanzador;
+import Objetos.POJODatos;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class XmlCreator {
 
-   /* public void createXML(List<String> attribute,String csvUri, String xmlName) throws IOException {
-        Element rootElement = new Element(xmlName);
-        Document dom = new Document();
-        RandomStringGenerator r = RandomStringGenerator.getInstance();
+    Document dom = new Document();
+    Lanzador datos = new Lanzador();
 
-        Long maxLines = Files.lines(Path.of(csvUri), Charset.forName("windows-1252")).count();
-        System.out.println(maxLines);
-        System.out.println(attribute.size());
-        BufferedReader reader = new BufferedReader(new FileReader(new File(csvUri)));
+    public void crearXML(String uri, String municipio){
+        Element root = new Element("datos");
 
+        root.addContent(crearHijo(datos.getListaCalidad(),municipio,"calidad_aire"));
+        root.addContent(crearHijo(datos.getListaMeteo(),municipio,"datos_meteorologicos"));
 
-        reader.readLine();
-        String line;
-        while((line=reader.readLine()) != null) {
-            List<String> values = Stream.of(line.split(";")).collect(Collectors.toList());
-            rootElement = elementsCreator(attribute, values, dom, r.randomString(), rootElement);
-        }
-
-        *//*System.out.println(rootElement);*//*
-        dom.setRootElement(rootElement);
-
-        xmlGenerator(dom,xmlName);
+        dom.setRootElement(root);
+        generateXML(uri,dom);
     }
 
-    private Element elementsCreator(List<String> attributes, List<String> values, Document dom, String parent, Element root){
-        Element rootElement = root;
-        Element rootChild = new Element(parent);
+    private Element crearHijo(List<POJODatos> lista, String municipio,String nombre) {
+        Element hijo = new Element(nombre);
+        lista.forEach(v->{
+            if(v.getMunicipio().equalsIgnoreCase(municipio)){
+                Element nodoHijo = new Element(v.getMagnitud());
+                Element media = new Element("media_mensual");
+                media.setText(String.valueOf(v.getMedia()));
+                Element maximo = new Element("maximo");
+                media.setText(String.valueOf(v.getMax()));
+                Element minimo = new Element("minimo");
+                media.setText(String.valueOf(v.getMin()));
+                Element fecha = new Element("fecha");
+                media.setText(v.getFecha());
 
-        for(int i=0;i<attributes.size();i++){
-            if(i>3) {
-                 rootChild.addContent(createElement(attributes.get(i), values.get(i), dom));
+                nodoHijo.setContent(media);
+                nodoHijo.setContent(maximo);
+                nodoHijo.setContent(minimo);
+                nodoHijo.setContent(fecha);
+
+                hijo.addContent(nodoHijo);
             }
-        }
-        rootElement.addContent(rootChild);
-        return rootElement;
+        });
+        return hijo;
     }
 
-    private Element createElement(String name, String content, Document dom){
-        Element child = new Element(name);
-        child.addContent(content);
-
-        return child;
-    }
-
-    private void xmlGenerator(Document dom, String name){
-        XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
-        String xmlPath = System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources";
-        File xml = new File(xmlPath);
-        if(!xml.exists()){
-            xml.mkdirs();
-        }
-        xml= new File(xmlPath+File.separator+name+".xml");
+    private void generateXML(String uri, Document dom){
+        XMLOutputter xml = new XMLOutputter();
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(xml));
-            xmlOutput.output(dom,bw);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(uri));
+            xml.output(dom,bw);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+
+    }
 }

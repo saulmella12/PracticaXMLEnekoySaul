@@ -1,6 +1,6 @@
 package Csv;
 
-import Objetos.CalidadAire;
+import Objetos.POJODatos;
 import lombok.Data;
 
 import java.io.*;
@@ -26,9 +26,9 @@ public class CalidadReader {
         return calidadReader;
     }
 
-    public List<CalidadAire> objectGenerator(){
+    public List<POJODatos> objectGenerator(){
 
-        List<CalidadAire> datosCalidad = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
+        List<POJODatos> datosCalidad = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
         //System.out.println("datos calidad: "+datosCalidad.size());
         return datosCalidad;
     }
@@ -42,8 +42,8 @@ public class CalidadReader {
         return null;
     }
 
-    private CalidadAire getDatos(String linea){
-        CalidadAire calidad = new CalidadAire();
+    private POJODatos getDatos(String linea){
+        POJODatos calidad = new POJODatos();
         Scanner sc = new Scanner(linea);
         sc.useDelimiter(";");
         sc.next();
