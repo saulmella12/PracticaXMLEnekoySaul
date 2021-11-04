@@ -14,15 +14,19 @@ public class Lanzador {
     public void empezar() throws InterruptedException {
         CalidadReader car = CalidadReader.getInstance();
         MeteoReader dmr = MeteoReader.getInstance();
+        CreadorMapMunicipios cmm = CreadorMapMunicipios.getInstance();
 
         Thread hilo1 = new Thread(tg,car);
         Thread hilo2 = new Thread(tg,dmr);
+        Thread hilo3 = new Thread(tg,cmm);
 
 
         hilo1.start();
         hilo2.start();
+        hilo3.start();
         hilo1.join();
         hilo2.join();
+        hilo3.join();
 
         listaCalidad = car.getListaCalidad();
         listaMeteo = dmr.getListaMeteo();

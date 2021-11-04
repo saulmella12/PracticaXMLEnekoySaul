@@ -14,12 +14,22 @@ public class CreadorMapMunicipios implements Runnable {
 
     String uri = System.getProperty("user.dir")+File.separator+"Datos"+File.separator+"calidad_aire_estaciones.csv";
 
+    private static CreadorMapMunicipios cmm = null;
+    private CreadorMapMunicipios(){}
+    public static CreadorMapMunicipios getInstance(){
+        if(cmm==null){
+            cmm= new CreadorMapMunicipios();
+        }
+        return cmm;
+    }
+
+
     private void mapMunicipios() throws IOException {
         EstacionesMapas em = EstacionesMapas.getInstance();
 
         List<String> estacionesList = Files.readAllLines(Path.of(uri), Charset.forName("windows-1252"));
 
-        for(String a : estacionesList){
+        estacionesList.stream().skip(1).forEach(a->{
 
             StringTokenizer st = new StringTokenizer(a,";");
 
@@ -28,7 +38,7 @@ public class CreadorMapMunicipios implements Runnable {
             st.nextElement();
             String nombre = st.nextToken();
             em.fillCodigoMunicipio(codigoMunicipio,nombre);
-        }
+        });
     }
 
     @Override
