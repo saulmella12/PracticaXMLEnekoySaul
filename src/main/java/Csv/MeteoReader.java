@@ -1,6 +1,7 @@
 package Csv;
 
 import Objetos.POJODatos;
+import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +10,10 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MeteoReader {
+@Data
+public class MeteoReader implements Runnable {
     private String meteoCsv = System.getProperty("user.dir")+ File.separator+"Datos"+File.separator+"calidad_aire_datos_meteo_mes.csv";
-    //String meteoCsv = System.getProperty("user.dir")+File.separator+"Datos"+File.separator+"calidad_aire_datos_meteo_mes.csv";
+    List<POJODatos> listaMeteo = new ArrayList<>();
 
     private static MeteoReader meteoReader = null;
     private MeteoReader(){}
@@ -23,11 +25,11 @@ public class MeteoReader {
         return meteoReader;
     }
 
-    public List<POJODatos> objectGenerator(){
+    private void objectGenerator(){
 
         List<POJODatos> datosMeteo = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
         //System.out.println("datos calidad: "+datosCalidad.size());
-        return datosMeteo;
+        listaMeteo = datosMeteo;
     }
 
     private List<String> getStringList() {
@@ -105,8 +107,8 @@ public class MeteoReader {
         return returner;
     }
 
-    public static void main(String[] args) {
-        MeteoReader m = new MeteoReader();
-        m.objectGenerator();
+    @Override
+    public void run() {
+        objectGenerator();
     }
 }
