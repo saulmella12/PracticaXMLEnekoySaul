@@ -37,7 +37,10 @@ public class CreadorMapMunicipios implements Runnable {
             int codigoMunicipio = Integer.parseInt(codigo.substring(2,5));
             st.nextElement();
             String nombre = st.nextToken();
+            nombre = nombre.replace(" ","_");
             em.fillCodigoMunicipio(codigoMunicipio,nombre);
+            em.fillCodigoestaciones(Integer.parseInt(codigo),nombre);
+
         });
     }
 

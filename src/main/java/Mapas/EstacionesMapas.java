@@ -20,7 +20,7 @@ public class EstacionesMapas {
     }
 
     private Map<Integer,String> codigoMunicipio = new LinkedHashMap<>();
-    private Map<Integer,String> codigoNacional = new LinkedHashMap<>();
+    private Map<Integer,String> codigoEstacion = new LinkedHashMap<>();
 
     /**
      * rellenar los mapas
@@ -31,4 +31,7 @@ public class EstacionesMapas {
         codigoMunicipio.put(codigo,municipio);
     }
 
+    public void fillCodigoestaciones(int codigo, String estacion) {
+        codigoEstacion.put(codigo,estacion);
+    }
 }

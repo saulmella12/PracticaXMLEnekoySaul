@@ -24,13 +24,13 @@ public class MagnitudMap {
         magnitudes.put(6,"CO");
         magnitudes.put(7,"NO");
         magnitudes.put(8,"N02");
-        magnitudes.put(9,"particulas_en_suspension_PM2,5");
+        magnitudes.put(9,"particulas_en_suspension_PM2.5");
         magnitudes.put(10,"particulas_en_suspension_PM10");
         magnitudes.put(12,"Oxidos_de_nitrogeno");
         magnitudes.put(14,"O3");
-        magnitudes.put(20,"tolueno(C7H8)");
+        magnitudes.put(20,"tolueno-C7H8");
         magnitudes.put(22,"Black_Carbon");
-        magnitudes.put(30,"Benceno(C6H6)");
+        magnitudes.put(30,"Benceno-C6H6");
         magnitudes.put(42,"Hidrocarburos_totales");
         magnitudes.put(44,"Hidrocarburos_no_metalicos");
         magnitudes.put(431,"MetaParaXileno");

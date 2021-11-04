@@ -48,9 +48,10 @@ public class CalidadReader implements Runnable {
         sc.useDelimiter(";");
         sc.next();
         sc.next();
-        calidad.setEstacion(sc.next());
+        sc.next();
         sc.next();
         String largo = sc.next();
+        calidad.setEstacion(largo);
         calidad.setFecha(sc.next()+"/"+sc.next()+"/"+sc.next());
         calidad.setMunicipio(largo.substring(2,5));
         StringTokenizer st = new StringTokenizer(largo,"_");
