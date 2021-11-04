@@ -11,10 +11,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
-public class CalidadReader {
+public class CalidadReader implements Runnable {
 
     private String calidadCsv = System.getProperty("user.dir")+File.separator+"Datos"+File.separator+"calidad_aire_datos_mes.csv";
-    //String meteoCsv = System.getProperty("user.dir")+File.separator+"Datos"+File.separator+"calidad_aire_datos_meteo_mes.csv";
+    List<POJODatos> listaCalidad = new ArrayList<>();
 
     private static CalidadReader calidadReader = null;
     private CalidadReader(){}
@@ -26,11 +26,11 @@ public class CalidadReader {
         return calidadReader;
     }
 
-    public List<POJODatos> objectGenerator(){
+    private void objectGenerator(){
 
         List<POJODatos> datosCalidad = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
         //System.out.println("datos calidad: "+datosCalidad.size());
-        return datosCalidad;
+        listaCalidad = datosCalidad;
     }
 
     private List<String> getStringList() {
@@ -101,9 +101,8 @@ public class CalidadReader {
         return returner;
     }
 
-    public static void main(String[] args) {
-        CalidadReader r = new CalidadReader();
-        r.objectGenerator();
+    @Override
+    public void run() {
+        objectGenerator();
     }
-
 }
