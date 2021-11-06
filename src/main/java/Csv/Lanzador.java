@@ -11,6 +11,10 @@ public class Lanzador {
     List<POJODatos> listaMeteo = new ArrayList<>();
     ThreadGroup tg = new ThreadGroup("lectoresCSV");
 
+    /**
+     * crear hilos que ejecutan a la vez los lectores de csv
+     * @throws InterruptedException
+     */
     public void empezar() throws InterruptedException {
         CalidadReader car = CalidadReader.getInstance();
         MeteoReader dmr = MeteoReader.getInstance();

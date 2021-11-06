@@ -1,12 +1,10 @@
 package xml;
 
-import Csv.Lanzador;
 import Objetos.POJODatos;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +16,7 @@ public class DataXmlGenerator {
     List<POJODatos> meteoList;
 
     private static DataXmlGenerator xml = null;
+
     private DataXmlGenerator(List<POJODatos> calidadList, List<POJODatos> meteoList){
         this.meteoList=meteoList;
         this.calidadList=calidadList;
@@ -31,6 +30,9 @@ public class DataXmlGenerator {
         return xml;
     }
 
+    /**
+     * creacion de xml a partir de dos listas de POJODatos, creando un dom por cada lista para crear un xml por cada lista
+     */
     private void generateXML(){
         Document domCalidad = new Document();
         Document domMeteo = new Document();
@@ -51,6 +53,11 @@ public class DataXmlGenerator {
         outputXML(domCalidad,domMeteo);
     }
 
+    /**
+     * creacion de nodos a partir de un objeto POJODatos
+     * @param datos POJODatos que usaremos para sacar la informacion a plasmar en el xml
+     * @return el elemento creado
+     */
     private Element nodeGenerator(POJODatos datos){
         Element child = new Element("datos");
 
@@ -80,6 +87,11 @@ public class DataXmlGenerator {
         return child;
     }
 
+    /**
+     * creacion de los xml a partir de los dom
+     * @param domCalidad dom del xml calidad
+     * @param domMeteo dom del xml datosMeteo
+     */
     private void outputXML(Document domCalidad, Document domMeteo){
         String uri = System.getProperty("user.dir")+ File.separator+"target"+File.separator+"generated-sources";
         File file = new File(uri);

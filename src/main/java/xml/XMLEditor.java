@@ -7,21 +7,20 @@ import Mapas.UdMedidaMapa;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.xpath.XPathExpression;
-import org.jdom2.xpath.XPathFactory;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class XmlCreator {
-
-    Document dom = new Document();
+public class XMLEditor {
+    Document domExistente = new Document();
     Lanzador datos = new Lanzador();
     String uriInput = System.getProperty("user.dir")+ File.separator+"target"+File.separator+"generated-sources";
     MagnitudMap mm = MagnitudMap.getInstance();
@@ -30,37 +29,44 @@ public class XmlCreator {
     String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
 
     /**
-     * creacion del xml filtrado por el municipio
+     * editar el xml filtrado por el municipio
      * @param municipio por el que se filtrara
      */
-    public void crearXML(String municipio){
-        Element root = new Element("datos");
-        Element municipioElement = new Element("municipio");
-        municipioElement.setAttribute("nombre",em.getCodigoMunicipio().get(Integer.parseInt(municipio)));
+    public void editarXML(String municipio){
+        SAXBuilder sax = new SAXBuilder();
         Element rootCalidad = null;
         Element rootMeteo = null;
-        Element calidad = new Element("calidad_aire");
-        Element meteo = new Element("datos_meteorologicos");
-
-        SAXBuilder sax = new SAXBuilder();
-        try{
+        try {
+            domExistente = sax.build(uri);
             rootCalidad=sax.build(uriInput+File.separator+"datosCalidad.xml").getRootElement();
             rootMeteo=sax.build(uriInput+File.separator+"datosMeteo.xml").getRootElement();
-            //System.out.println(rootCalidad.getChild("datos").getChild("municipio").getText());
-        } catch (IOException | JDOMException e) {
+        } catch (JDOMException | IOException e) {
             e.printStackTrace();
         }
 
-        for (int i=0;i<432;i++){
-            if(i<81 || i==431) {
-                Element elemento = crearHijo(rootCalidad, municipio,i);
-                if(elemento!=null){
+        Element rootE = domExistente.getRootElement();
+
+        Document dom = new Document();
+        Element root = new Element("datos");
+        List<Element> elementosAniadir = rootE.getChildren("municipio");
+        System.out.println(elementosAniadir.size());
+        root.addContent(elementosAniadir);
+
+        Element municipioElement = new Element("municipio");
+        municipioElement.setAttribute("nombre",em.getCodigoMunicipio().get(Integer.parseInt(municipio)));
+        Element calidad = new Element("calidad_aire");
+        Element meteo = new Element("datos_meteorologicos");
+
+        for (int i=0;i<432;i++) {
+            if (i < 81 || i == 431) {
+                Element elemento = crearHijo(rootCalidad, municipio, i);
+                if (elemento != null) {
                     calidad.addContent(elemento);
                 }
             }
-            if(i>=81 && i!=431) {
-                Element elemento = crearHijo(rootMeteo, municipio,i);
-                if(elemento!=null){
+            if (i >= 81 && i != 431) {
+                Element elemento = crearHijo(rootMeteo, municipio, i);
+                if (elemento != null) {
                     meteo.addContent(elemento);
                 }
             }
@@ -69,6 +75,7 @@ public class XmlCreator {
         municipioElement.addContent(calidad);
         municipioElement.addContent(meteo);
         root.addContent(municipioElement);
+
 
         dom.setRootElement(root);
         generateXML(dom);
@@ -95,7 +102,6 @@ public class XmlCreator {
             List<Double> minimos = new ArrayList<>();
             List<Double> medias = new ArrayList<>();
             String date = rootElement.getChild("datos").getChild("fecha").getText();
-            fecha.addContent(date);
 
             datos.forEach(v -> {
                 if (v.getChild("municipio").getText().equalsIgnoreCase(municipio) && v.getChild("magnitud").getText().equalsIgnoreCase(String.valueOf(magnitud))) {
@@ -132,46 +138,13 @@ public class XmlCreator {
     private void generateXML(Document dom){
         XMLOutputter xml = new XMLOutputter(Format.getPrettyFormat());
 
-        String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db";
-        File dir = new File(uri);
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-        uri = uri+File.separator+"mediciones.xml";
-        File archivo = new File(uri);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(uri));
+            xml.output(dom,bw);
 
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(archivo));
-                xml.output(dom,bw);
-
-                System.out.println("xml creado en la uri "+uri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-    /**
-     *
-     * @throws IOException
-     * @throws JDOMException
-     */
-    public void loadData() throws IOException, JDOMException {
-
-        SAXBuilder builder = new SAXBuilder();
-        File xmlFile = new File(this.uri);
-        this.dom = (Document) builder.build(xmlFile);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<String> obtenerMediasMensuales() {
-        XPathFactory xpath = XPathFactory.instance();
-        XPathExpression<Element> expr = xpath.compile("//media_mensual", Filters.element());
-        List<Element> medias = expr.evaluate(this.dom);
-        List<String> listaMedias = new ArrayList<String>();
-        medias.forEach(m -> listaMedias.add(m.getValue().trim()));
-        return listaMedias;
+            System.out.println("xml creado en la uri "+uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

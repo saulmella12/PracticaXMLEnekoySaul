@@ -23,7 +23,10 @@ public class CreadorMapMunicipios implements Runnable {
         return cmm;
     }
 
-
+    /**
+     * mapea los municipios del csv con los nombres de municipios y su codigo
+     * @throws IOException
+     */
     private void mapMunicipios() throws IOException {
         EstacionesMapas em = EstacionesMapas.getInstance();
 
