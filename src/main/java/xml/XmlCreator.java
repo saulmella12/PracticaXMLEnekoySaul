@@ -7,9 +7,13 @@ import Mapas.UdMedidaMapa;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +31,7 @@ public class XmlCreator {
     MagnitudMap mm = MagnitudMap.getInstance();
     EstacionesMapas em = EstacionesMapas.getInstance();
     UdMedidaMapa umm = UdMedidaMapa.getInstance();
-
+    String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
     public void crearXML(String municipio){
         Element root = new Element("datos");
         Element municipioElement = new Element(em.getCodigoMunicipio().get(Integer.parseInt(municipio)));
@@ -111,6 +115,7 @@ public class XmlCreator {
         return null;
     }
 
+
     private void generateXML(Document dom){
         XMLOutputter xml = new XMLOutputter(Format.getPrettyFormat());
 
@@ -130,6 +135,20 @@ public class XmlCreator {
         }
 
     }
+    public void loadData() throws IOException, JDOMException {
+
+        SAXBuilder builder = new SAXBuilder();
+        File xmlFile = new File(this.uri);
+        this.dom = (Document) builder.build(xmlFile);
+    }
+    public List<String> obtenerMediasMensuales() {
+        XPathFactory xpath = XPathFactory.instance();
+        XPathExpression<Element> expr = xpath.compile("//media_mensual", Filters.element());
+        List<Element> medias = expr.evaluate(this.dom);
+        List<String> listaMedias = new ArrayList<String>();
+        medias.forEach(m -> listaMedias.add(m.getValue().trim()));
+        return listaMedias;
+    }
 
     public static void main(String[] args) throws InterruptedException {
         Lanzador l = new Lanzador();
@@ -137,5 +156,8 @@ public class XmlCreator {
         DataXmlGenerator xml = DataXmlGenerator.getInstance(l.getListaCalidad(),l.getListaMeteo());
         XmlCreator xmlc = new XmlCreator();
         xmlc.crearXML("102");
+        /*Desde aqui no se le puede llamar porque te hace hacerlo static y revienta el programa asique hay que llamarlo desde otra clase
+        loadData();
+        getAllNames().forEach(System.out::println);;*/
     }
 }
