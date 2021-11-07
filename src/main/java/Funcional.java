@@ -8,14 +8,11 @@ import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class Funcional {
 
-    private String codMunicipio=null;
+    private int codMunicipio=0;
 
     private static Funcional funcional = null;
     private Funcional() {}
@@ -37,22 +34,20 @@ public class Funcional {
         Long startTime = System.currentTimeMillis();
         EstacionesMapas em = EstacionesMapas.getInstance();
 
-        checkFile(uri,municipio);
+        checkFile(uri,municipio.toLowerCase());
         municipioExists(municipio);
         crearCarpeta(uri);
-        if (codMunicipio==null){
+        if (codMunicipio==0){
             System.out.println("municipio no encontrado");
         }
         else {
-            GenerarXmlDatos gx = new GenerarXmlDatos();
-           gx.crearXMLData();
+            Lanzador l = Lanzador.getInstance();
             XmlCreator xmlc = new XmlCreator();
             xmlc.crearXML(codMunicipio);
             XpathManager manager = new XpathManager();
             manager.obtenerMediasMensuales().forEach(System.out::println);
             MDCreator md = new MDCreator();
-            md.mdCreator(uri,municipio);
-            ejecutarMd(uri,municipio);
+            md.mdCreator(uri,codMunicipio);
         }
     }
 
@@ -67,7 +62,7 @@ public class Funcional {
         if (em.getCodigoMunicipio().containsValue(municipio)) {
             for (Map.Entry<Integer, String> entry : em.getCodigoMunicipio().entrySet()) {
                 if (Objects.equals(entry.getValue(), municipio)) {
-                    codMunicipio = String.valueOf(entry.getKey());
+                    codMunicipio = entry.getKey();
                 }
             }
         }
@@ -90,7 +85,7 @@ public class Funcional {
      * @param municipio nombre del municipio
      */
     private void checkFile(String uri,String municipio){
-        File file = new File(uri+File.separator+municipio+".html");
+        File file = new File(uri+File.separator+"datos.md");
         if(file.exists()){
             System.out.println("parece que ya existe el archivo");
             System.out.println("quiere reemplazar el archivo existente? si/no");
