@@ -11,6 +11,12 @@ import java.io.File;
 public class GenerarXmlDatos {
     JaxbCalidad jc = new JaxbCalidad();
     JaxbMeteo jx = new JaxbMeteo();
+
+    /**
+     * genera el xml de datos de calidad aire
+     * @throws InterruptedException
+     * @throws JAXBException
+     */
     private void generarXmlCalidad() throws InterruptedException, JAXBException {
         jc.cargarDatos();
         JAXBContext jaxbContext = JAXBContext.newInstance(JaxbCalidad.class);
@@ -20,6 +26,11 @@ public class GenerarXmlDatos {
         jaxbMarshaller.marshal(jc, new File(jaxbxml));
     }
 
+    /**
+     * genera el xml de datos de datos meteorologicos
+     * @throws InterruptedException
+     * @throws JAXBException
+     */
     private void generarXmlMeteo() throws InterruptedException, JAXBException{
         jx.cargarDatos();
         JAXBContext jaxbContext = JAXBContext.newInstance(JaxbMeteo.class);

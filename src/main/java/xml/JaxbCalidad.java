@@ -20,6 +20,11 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbCalidad {
     List<POJODatos> listaCalidad = new ArrayList<>();
+
+    /**
+     * creacion del xml calidad aire
+     * @throws InterruptedException
+     */
     public void cargarDatos() throws InterruptedException{
         Lanzador l = Lanzador.getInstance();
         l.empezar();

@@ -14,6 +14,11 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbMeteo {
     List<POJODatos> listaMeteo = new ArrayList<>();
+
+    /**
+     * cracion del xml datos meteorologicos
+     * @throws InterruptedException
+     */
     public void cargarDatos() throws InterruptedException{
         Lanzador l = Lanzador.getInstance();
         l.empezar();
