@@ -21,7 +21,7 @@ import java.util.List;
 public class JaxbCalidad {
     List<POJODatos> listaCalidad = new ArrayList<>();
     public void cargarDatos() throws InterruptedException{
-        Lanzador l = new Lanzador();
+        Lanzador l = Lanzador.getInstance();
         l.empezar();
         listaCalidad= l.getListaCalidad();
     }

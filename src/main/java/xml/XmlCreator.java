@@ -26,7 +26,7 @@ import java.util.Optional;
 public class XmlCreator {
 
     Document dom = new Document();
-    Lanzador datos = new Lanzador();
+    Lanzador datos = Lanzador.getInstance();
     String uriInput = System.getProperty("user.dir")+ File.separator+"target"+File.separator+"generated-sources";
     MagnitudMap mm = MagnitudMap.getInstance();
     EstacionesMapas em = EstacionesMapas.getInstance();
@@ -34,7 +34,8 @@ public class XmlCreator {
     String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
     public void crearXML(String municipio){
         Element root = new Element("datos");
-        Element municipioElement = new Element(em.getCodigoMunicipio().get(Integer.parseInt(municipio)));
+        Element municipioElement = new Element("municipio");
+        municipioElement.setAttribute("nombre",em.getCodigoMunicipio().get(Integer.parseInt(municipio)));
         Element rootCalidad = null;
         Element rootMeteo = null;
         Element calidad = new Element("calidad_aire");
@@ -51,13 +52,13 @@ public class XmlCreator {
 
         for (int i=0;i<432;i++){
             if(i<81 || i==431) {
-                Element elemento = crearHijo(rootCalidad, municipio,i);
+                Element elemento = crearHijo(rootCalidad, municipio,i,true);
                 if(elemento!=null){
                     calidad.addContent(elemento);
                 }
             }
             if(i>=81 && i!=431) {
-                Element elemento = crearHijo(rootMeteo, municipio,i);
+                Element elemento = crearHijo(rootMeteo, municipio,i,false);
                 if(elemento!=null){
                     meteo.addContent(elemento);
                 }
@@ -72,26 +73,29 @@ public class XmlCreator {
         generateXML(dom);
     }
 
-    private Element crearHijo(Element rootElement, String municipio, int magnitud) {
+    private Element crearHijo(Element rootElement, String municipio, int magnitud, boolean tipo) {
         if(mm.getMapa().containsKey(magnitud)) {
 
-            Element medicion = new Element(mm.getMapa().get(magnitud));
+            Element medicion = new Element("medicion");
+            medicion.setAttribute("nombre",mm.getMapa().get(magnitud));
             Element maximo = new Element("maximo_mensual");
             Element minimo = new Element("minimo_mensual");
             Element media = new Element("media_mensual");
-            Element fecha = new Element("fecha");
 
-            List<Element> datos = rootElement.getChildren("datos");
+            List<Element> datos = null; //aqui esta la mierda
+            if(tipo==true){
+                datos = rootElement.getChildren("listaCalidad");
+            }
+            else datos = rootElement.getChildren("listaMeteo");
             List<Double> maximas = new ArrayList<>();
             List<Double> minimos = new ArrayList<>();
             List<Double> medias = new ArrayList<>();
-            String date = rootElement.getChild("datos").getChild("fecha").getText();
 
             datos.forEach(v -> {
                 if (v.getChild("municipio").getText().equalsIgnoreCase(municipio) && v.getChild("magnitud").getText().equalsIgnoreCase(String.valueOf(magnitud))) {
-                    maximas.add(Double.parseDouble(v.getChild("temp_max").getText()));
-                    minimos.add(Double.parseDouble(v.getChild("temp_min").getText()));
-                    medias.add(Double.parseDouble(v.getChild("temp_media").getText()));
+                    maximas.add(Double.parseDouble(v.getChild("max").getText()));
+                    minimos.add(Double.parseDouble(v.getChild("min").getText()));
+                    medias.add(Double.parseDouble(v.getChild("media").getText()));
                 }
             });
             if(maximas.size()!=0) {
@@ -102,8 +106,10 @@ public class XmlCreator {
                 Optional<Double> min = minimos.stream().min(Comparator.comparing(v -> v));
                 minimo.setText(min.get()+" "+umm.getUdMedida().get(magnitud));
             }
-            double med = (medias.stream().mapToDouble(v->v).sum())/ medias.size();
-            media.setText(med+" "+umm.getUdMedida().get(magnitud));
+            if(medias.size()!=0) {
+                double med = (medias.stream().mapToDouble(v -> v).sum()) / medias.size();
+                media.setText(med + " " + umm.getUdMedida().get(magnitud));
+            }
 
             medicion.addContent(maximo);
             medicion.addContent(minimo);
@@ -126,7 +132,7 @@ public class XmlCreator {
             }
 
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(uri+File.separator+"mediciones.xml",true));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(uri+File.separator+"mediciones.xml"));
             xml.output(dom,bw);
 
             System.out.println("xml creado en la uri "+uri+File.separator+"mediciones.xml");
@@ -135,29 +141,15 @@ public class XmlCreator {
         }
 
     }
-    public void loadData() throws IOException, JDOMException {
 
-        SAXBuilder builder = new SAXBuilder();
-        File xmlFile = new File(this.uri);
-        this.dom = (Document) builder.build(xmlFile);
-    }
-    public List<String> obtenerMediasMensuales() {
-        XPathFactory xpath = XPathFactory.instance();
-        XPathExpression<Element> expr = xpath.compile("//media_mensual", Filters.element());
-        List<Element> medias = expr.evaluate(this.dom);
-        List<String> listaMedias = new ArrayList<String>();
-        medias.forEach(m -> listaMedias.add(m.getValue().trim()));
-        return listaMedias;
-    }
-
-    public static void main(String[] args) throws InterruptedException {
+    /*public static void main(String[] args) throws InterruptedException {
         Lanzador l = new Lanzador();
         l.empezar();
-        DataXmlGenerator xml = DataXmlGenerator.getInstance(l.getListaCalidad(),l.getListaMeteo());
+        //DataXmlGenerator xml = DataXmlGenerator.getInstance(l.getListaCalidad(),l.getListaMeteo());
         XmlCreator xmlc = new XmlCreator();
-        xmlc.crearXML("102");
-        /*Desde aqui no se le puede llamar porque te hace hacerlo static y revienta el programa asique hay que llamarlo desde otra clase
-        loadData();
-        getAllNames().forEach(System.out::println);;*/
-    }
+        xmlc.crearXML("123");
+        //Desde aqui no se le puede llamar porque te hace hacerlo static y revienta el programa asique hay que llamarlo desde otra clase
+        //loadData();
+        //getAllNames().forEach(System.out::println);;
+    }*/
 }

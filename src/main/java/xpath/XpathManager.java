@@ -1,0 +1,54 @@
+package xpath;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class XpathManager {
+
+    Document dom = new Document();
+    String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
+    List<String> listaMedias;
+
+    private void loadData() throws IOException, JDOMException {
+
+        SAXBuilder builder = new SAXBuilder();
+        File xmlFile = new File(this.uri);
+        this.dom = (Document) builder.build(xmlFile);
+    }
+    public List<String> obtenerMediasMensuales() {
+        try {
+            loadData();
+        } catch (IOException | JDOMException e) {
+            e.printStackTrace();
+        }
+        XPathFactory xpath = XPathFactory.instance();
+        XPathExpression<Element> expr = xpath.compile("//medicion", Filters.element());
+        List<Element> medias = expr.evaluate(this.dom);
+        List<String> listaMedias = new ArrayList<String>();
+        medias.forEach(m -> {
+            String valor =  m.getChild("media_mensual").getText();
+            if (valor.equalsIgnoreCase("")){
+                valor = "no hay valores sobre esta medicion";
+            }
+            String aniadir = m.getAttributeValue("nombre") + ": " + valor;
+            listaMedias.add(aniadir);
+
+        });
+        return listaMedias;
+    }
+
+    public static void main(String[] args) {
+        XpathManager manager = new XpathManager();
+        manager.obtenerMediasMensuales().forEach(System.out::println);
+    }
+}

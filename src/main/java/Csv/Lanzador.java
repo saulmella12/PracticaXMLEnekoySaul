@@ -16,6 +16,15 @@ public class Lanzador {
     List<POJODatos> listaMeteo = new ArrayList<>();
     ThreadGroup tg = new ThreadGroup("lectoresCSV");
 
+    private static Lanzador launcher = null;
+    private Lanzador(){}
+    public static Lanzador getInstance(){
+        if(launcher==null){
+            launcher = new Lanzador();
+        }
+        return launcher;
+    }
+
     public void empezar() throws InterruptedException {
         CalidadReader car = CalidadReader.getInstance();
         MeteoReader dmr = MeteoReader.getInstance();

@@ -15,7 +15,7 @@ import java.util.List;
 public class JaxbMeteo {
     List<POJODatos> listaMeteo = new ArrayList<>();
     public void cargarDatos() throws InterruptedException{
-        Lanzador l = new Lanzador();
+        Lanzador l = Lanzador.getInstance();
         l.empezar();
         listaMeteo= l.getListaMeteo();
     }

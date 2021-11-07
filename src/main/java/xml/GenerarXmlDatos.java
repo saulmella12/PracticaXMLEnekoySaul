@@ -8,10 +8,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import java.io.File;
 
-public class GenerarXmlCalidad {
+public class GenerarXmlDatos {
     JaxbCalidad jc = new JaxbCalidad();
     JaxbMeteo jx = new JaxbMeteo();
-    public void generarXmlCalidad() throws InterruptedException, JAXBException {
+    private void generarXmlCalidad() throws InterruptedException, JAXBException {
         jc.cargarDatos();
         JAXBContext jaxbContext = JAXBContext.newInstance(JaxbCalidad.class);
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -20,12 +20,17 @@ public class GenerarXmlCalidad {
         jaxbMarshaller.marshal(jc, new File(jaxbxml));
     }
 
-    public void generarXmlMeteo() throws InterruptedException, JAXBException{
+    private void generarXmlMeteo() throws InterruptedException, JAXBException{
         jx.cargarDatos();
         JAXBContext jaxbContext = JAXBContext.newInstance(JaxbMeteo.class);
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         String jaxbxml = System.getProperty("user.dir")+ File.separator+"target"+File.separator+"generated-sources"+File.separator+"datosMeteo.xml";
         jaxbMarshaller.marshal(jx, new File(jaxbxml));
+    }
+
+    public void crearXMLData() throws JAXBException, InterruptedException {
+        generarXmlCalidad();
+        generarXmlMeteo();
     }
 }
