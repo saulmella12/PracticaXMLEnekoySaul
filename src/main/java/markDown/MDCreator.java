@@ -8,6 +8,11 @@ import xpath.*;
 
 public class MDCreator {
 
+    /**
+     * crea un archivo md a partir de la lista de resultados de xpath
+     * @param uri donde se guardara el archivo .md
+     * @param municipio al que hace referencia la medicion
+     */
     public void mdCreator(String uri, int municipio){
         File archivo = new File(uri);
         if(!archivo.exists()){

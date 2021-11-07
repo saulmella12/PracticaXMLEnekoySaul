@@ -35,6 +35,10 @@ public class XmlCreator {
     UdMedidaMapa umm = UdMedidaMapa.getInstance();
     String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
 
+    /**
+     * creacion del xml informativos ya filtrado y con medias mensuales
+     * @param municipio al que hace referencia la medicion
+     */
     public void crearXML(int municipio){
         Element root = new Element("datos");
         Element municipioElement = new Element("municipio");
@@ -75,6 +79,14 @@ public class XmlCreator {
         generateXML(dom);
     }
 
+    /**
+     * cramos el nodo hijo que aniadiremos con los datos de media mensual de la medicion, filtrado por la medicion y el municipio deseados
+     * @param rootElement de donde sacaremos la informacion (datosCalidad o datosMeteo)
+     * @param municipio al que hace refrencia la medicion
+     * @param magnitud a evaluar
+     * @param tipo para saber si se esta viendo datos meteorologicos o calidad del aire
+     * @return el elemento creado
+     */
     private Element crearHijo(Element rootElement, int municipio, int magnitud, boolean tipo) {
         if(mm.getMapa().containsKey(magnitud)) {
 
@@ -125,7 +137,10 @@ public class XmlCreator {
         return null;
     }
 
-
+    /**
+     * generador de xml a partir de un dom
+     * @param dom que usaremos para generar el xml
+     */
     private void generateXML(Document dom){
         XMLOutputter xml = new XMLOutputter(Format.getPrettyFormat());
 
