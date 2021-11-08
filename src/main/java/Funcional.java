@@ -51,6 +51,7 @@ public class Funcional {
             String fecha = manager.getFecha();
             MDCreator md = new MDCreator();
             md.mdCreator(uri,codMunicipio,fecha);
+            ejecutarMd(uri,municipio);
         }
     }
 
@@ -107,7 +108,7 @@ public class Funcional {
      * @param municipio nombre del municipio asociado al archivo
      */
     private void ejecutarMd(String uri, String municipio){
-        String urii = uri+File.separator+municipio+".md";
+        String urii = uri+File.separator+"datos.md";
         File mdFile = new File(urii);
         try {
             Desktop.getDesktop().browse(mdFile.toURI());
