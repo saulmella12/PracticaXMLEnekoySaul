@@ -42,12 +42,15 @@ public class Funcional {
         }
         else {
             Lanzador l = Lanzador.getInstance();
+            GenerarXmlDatos generarDatos = new GenerarXmlDatos();
+            generarDatos.crearXMLData();
             XmlCreator xmlc = new XmlCreator();
             xmlc.crearXML(codMunicipio);
             XpathManager manager = new XpathManager();
             manager.obtenerMediasMensuales().forEach(System.out::println);
+            String fecha = manager.getFecha();
             MDCreator md = new MDCreator();
-            md.mdCreator(uri,codMunicipio);
+            md.mdCreator(uri,codMunicipio,fecha);
         }
     }
 

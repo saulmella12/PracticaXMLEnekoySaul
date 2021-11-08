@@ -15,9 +15,10 @@ import java.util.List;
 
 public class XpathManager {
 
-    Document dom = new Document();
-    String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
-    List<String> listaMedias;
+    private Document dom = new Document();
+    private String uri = System.getProperty("user.dir")+File.separator+"target"+File.separator+"db"+File.separator+"mediciones.xml";
+    private List<String> listaMedias;
+    private String fecha="";
 
     /**
      * inicializa el dom a usar
@@ -46,6 +47,7 @@ public class XpathManager {
         List<Element> medias = expr.evaluate(this.dom);
         List<String> listaMedias = new ArrayList<String>();
         medias.forEach(m -> {
+            fecha = m.getChildText("fecha_medicion");
             String valor =  m.getChild("media_mensual").getText();
             if (valor.equalsIgnoreCase("")){
                 valor = "no hay valores sobre esta medicion";
@@ -57,8 +59,12 @@ public class XpathManager {
         return listaMedias;
     }
 
-    public static void main(String[] args) {
+    public String getFecha() {
+        return fecha;
+    }
+
+    /*public static void main(String[] args) {
         XpathManager manager = new XpathManager();
         manager.obtenerMediasMensuales().forEach(System.out::println);
-    }
+    }*/
 }

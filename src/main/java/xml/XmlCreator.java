@@ -95,12 +95,17 @@ public class XmlCreator {
             Element maximo = new Element("maximo_mensual");
             Element minimo = new Element("minimo_mensual");
             Element media = new Element("media_mensual");
+            Element fecha = new Element("fecha_medicion");
 
             List<Element> datos = null; //aqui esta la mierda
             if(tipo==true){
                 datos = rootElement.getChildren("listaCalidad");
+                fecha.setText(rootElement.getChild("listaCalidad").getChild("fecha").getText());
             }
-            else datos = rootElement.getChildren("listaMeteo");
+            else{
+                datos = rootElement.getChildren("listaMeteo");
+                fecha.setText(rootElement.getChild("listaMeteo").getChild("fecha").getText());
+            }
             List<Double> maximas = new ArrayList<>();
             List<Double> minimos = new ArrayList<>();
             List<Double> medias = new ArrayList<>();
@@ -129,8 +134,7 @@ public class XmlCreator {
             medicion.addContent(maximo);
             medicion.addContent(minimo);
             medicion.addContent(media);
-
-
+            medicion.addContent(fecha);
 
             return medicion;
         }

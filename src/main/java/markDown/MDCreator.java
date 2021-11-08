@@ -13,14 +13,14 @@ public class MDCreator {
      * @param uri donde se guardara el archivo .md
      * @param municipio al que hace referencia la medicion
      */
-    public void mdCreator(String uri, int municipio){
+    public void mdCreator(String uri, int municipio, String fecha){
         File archivo = new File(uri);
         if(!archivo.exists()){
             archivo.mkdirs();
         }
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(uri+File.separator+"datos.md"));) {
             XpathManager manager = new XpathManager();
-            bw.write("## Datos de "+municipio+"\n");
+            bw.write("## Datos de "+municipio+" del dia "+fecha+"\n");
             manager.obtenerMediasMensuales().forEach(v->{
                 try {
                     bw.write("* "+v+"\n");
