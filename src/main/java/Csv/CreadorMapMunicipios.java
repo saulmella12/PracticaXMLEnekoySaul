@@ -23,7 +23,10 @@ public class CreadorMapMunicipios implements Runnable {
         return cmm;
     }
 
-
+    /**
+     * creamos el mapa de municipios y estaciones con sus codigos correspondientes
+     * @throws IOException
+     */
     private void mapMunicipios() throws IOException {
         EstacionesMapas em = EstacionesMapas.getInstance();
 

@@ -25,6 +25,9 @@ public class MeteoReader implements Runnable {
         return meteoReader;
     }
 
+    /**
+     * creamos la lista de POJODatos de calidad
+     */
     private void objectGenerator(){
 
         List<POJODatos> datosMeteo = getStringList().stream().skip(1).map(this::getDatos).collect(Collectors.toList());
@@ -32,6 +35,10 @@ public class MeteoReader implements Runnable {
         listaMeteo = datosMeteo;
     }
 
+    /**
+     * obtenemos la lista de Strings del archivo csv de los datos de calidad aire
+     * @return la lista de String
+     */
     private List<String> getStringList() {
         try {
             return Files.readAllLines(Path.of(meteoCsv));
@@ -41,6 +48,11 @@ public class MeteoReader implements Runnable {
         return null;
     }
 
+    /**
+     * a traves de una String con datos creamos el objeto POJODatos
+     * @param linea de donde se leera la informacion
+     * @return el objeto POJODatos
+     */
     private POJODatos getDatos(String linea){
         POJODatos meteo = new POJODatos();
         Scanner sc = new Scanner(linea);
@@ -70,12 +82,22 @@ public class MeteoReader implements Runnable {
         return meteo;
     }
 
+    /**
+     * crea la media diaria a partir de una lista de valores double
+     * @param temperaturas de todo el dia
+     * @return la media
+     */
     private Double getMedia(List<Double> temperaturas) {
         double suma= temperaturas.stream().mapToDouble(v ->v).sum();
         //System.out.println("suma: "+suma);
         return suma/ temperaturas.size();
     }
 
+    /**
+     * creamos la lista de valores por hora a partir de una String equivalente a una linea del csv
+     * @param linea de donde se leeran los datos
+     * @return la lista de valores por hora
+     */
     private List<Double> getTemperaturas(String linea) {
         List<String> temperaturas = new ArrayList<>();
         List<Double> returner = new ArrayList<>();

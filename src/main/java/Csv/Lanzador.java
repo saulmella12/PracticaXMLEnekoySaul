@@ -25,6 +25,10 @@ public class Lanzador {
         return launcher;
     }
 
+    /**
+     * cramos hilos independientes que lean los csv a la vez y consigan los datos nev¡cesarios para el programa
+     * @throws InterruptedException
+     */
     public void empezar() throws InterruptedException {
         CalidadReader car = CalidadReader.getInstance();
         MeteoReader dmr = MeteoReader.getInstance();
